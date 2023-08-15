@@ -1,0 +1,11 @@
+{
+  "name": "ai-webcam",
+  "version": "1.0.0",
+  "description": "Web cam that shows detected objects in real-time with ml5.js",
+  "main": "c.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
