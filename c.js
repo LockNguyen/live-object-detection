@@ -17,12 +17,15 @@ const stopBtn = document.querySelector("#stopCam");
 // Initialize Camera & Model
 async function make() {
     // turn video into live webcam (hidden)
+    statusText.innerHTML = "Setting up video stream... ⚙️";
     await createVideoStream();
 
     // create objectDetector
+    statusText.innerHTML = "Setting up ML model... ⚙️";
     cocossd = await ml5.objectDetector('cocossd', startDetecting);
 
     // create temporary canvas (CTX) for drawing
+    statusText.innerHTML = "Setting up canvas... ⚙️";
     setCanvasContext(WIDTH, HEIGHT);
     ctx = canvas.getContext('2d');
 }
@@ -30,12 +33,13 @@ async function make() {
 // Start & Stop Cameras
 const startCam = () => {
     liveStatus = true;
-    statusText.innerHTML = "Loading... ⚙️";
+    statusText.innerHTML = "Starting... ⚙️";
     startBtn.classList.add("disabled");
     make();
 };
 
 const stopCam = () => {
+    statusText.innerHTML = "Stopping... ⚙️";
     let stream = video.srcObject;
     let tracks = stream.getTracks();
 
@@ -57,13 +61,12 @@ async function startDetecting() { // callback for ml5.objectDetector
     
     liveStatus = true;
     while(liveStatus) {
-        await pause();
-        detect();
+        await detect();
     }
 }
 
-function detect() {
-    cocossd.detect(video, (err, results) => {
+async function detect() {
+    await cocossd.detect(video, (err, results) => {
         if (err) {
             console.log(err);
             return;
@@ -81,7 +84,7 @@ function detect() {
 
 // Re-draw the Temporary CTX
 // (Take snippets from real 'video' & add green boxes)
-function draw() {
+async function draw() {
     // clear screen
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
@@ -114,9 +117,9 @@ function setCanvasContext(w, h) {
     canvas.height = h;
 }
 
-function pause() {
-    return new Promise(resolve => setTimeout(() => resolve(), 20));
-}
+// function pause() {
+//     return new Promise(resolve => setTimeout(() => resolve(), 20));
+// }
 
 /* WORKING 
 
