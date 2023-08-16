@@ -1,138 +1,138 @@
-// // Variables
-// let cocossd; // object detector
-// let liveStatus;
-// let objects = [];
+// Variables
+let cocossd; // object detector
+let liveStatus;
+let objects = [];
 
-// let video = document.querySelector("#video");
-// let canvas = document.querySelector("#canvas"); 
-// let ctx;
-// let statusText = document.querySelector("#status");
+let video = document.querySelector("#video");
+let canvas = document.querySelector("#canvas"); 
+let ctx;
+let statusText = document.querySelector("#status");
 
-// const WIDTH = 480;
-// const HEIGHT = 360;
+const WIDTH = 480;
+const HEIGHT = 360;
 
-// const startBtn = document.querySelector("#startCam");
-// const stopBtn = document.querySelector("#stopCam");
-// const resultsText = document.querySelector("#results");
+const startBtn = document.querySelector("#startCam");
+const stopBtn = document.querySelector("#stopCam");
+const resultsText = document.querySelector("#results");
 
-// // Initialize Camera & Model
-// async function make() {
-//     // turn video into live webcam (hidden)
-//     statusText.innerHTML = "Setting up video stream... ⚙️";
-//     await createVideoStream();
+// Initialize Camera & Model
+async function make() {
+    // turn video into live webcam (hidden)
+    statusText.innerHTML = "Setting up video stream... ⚙️";
+    await createVideoStream();
 
-//     // create objectDetector
-//     statusText.innerHTML = "Setting up ML model... ⚙️";
-//     cocossd = await ml5.objectDetector('cocossd', startDetecting);
+    // create objectDetector
+    statusText.innerHTML = "Setting up ML model... ⚙️";
+    cocossd = await ml5.objectDetector('cocossd', startDetecting);
 
-//     // create temporary canvas (CTX) for drawing
-//     statusText.innerHTML = "Setting up canvas... ⚙️";
-//     setCanvasContext(WIDTH, HEIGHT);
-//     ctx = canvas.getContext('2d');
-// }
+    // create temporary canvas (CTX) for drawing
+    statusText.innerHTML = "Setting up canvas... ⚙️";
+    setCanvasContext(WIDTH, HEIGHT);
+    ctx = canvas.getContext('2d');
+}
 
-// // Start & Stop Cameras
-// const startCam = () => {
-//     liveStatus = true;
-//     statusText.innerHTML = "Starting... ⚙️";
-//     startBtn.classList.add("disabled");
-//     make();
-// };
+// Start & Stop Cameras
+const startCam = () => {
+    liveStatus = true;
+    statusText.innerHTML = "Starting... ⚙️";
+    startBtn.classList.add("disabled");
+    make();
+};
 
-// const stopCam = () => {
-//     statusText.innerHTML = "Stopping... ⚙️";
-//     let stream = video.srcObject;
-//     let tracks = stream.getTracks();
+const stopCam = () => {
+    statusText.innerHTML = "Stopping... ⚙️";
+    let stream = video.srcObject;
+    let tracks = stream.getTracks();
 
-//     tracks.forEach((track) => track.stop());
-//     video.removeAttribute("srcObject");
+    tracks.forEach((track) => track.stop());
+    video.removeAttribute("srcObject");
 
-//     // Change button status
-//     liveStatus = false;
-//     statusText.innerHTML = "Offline ⚫";
-//     resultsText.innerHTML = "😴";
-//     startBtn.classList.remove("disabled");
-//     stopBtn.classList.add("disabled");
-// }
+    // Change button status
+    liveStatus = false;
+    statusText.innerHTML = "Offline ⚫";
+    resultsText.innerHTML = "😴";
+    startBtn.classList.remove("disabled");
+    stopBtn.classList.add("disabled");
+}
 
-// // Object Detection Workflow
-// async function startDetecting() { // callback for ml5.objectDetector
-//     console.log("Model is ready.");
-//     statusText.innerHTML = "Live 🔴";
-//     stopBtn.classList.remove("disabled");
+// Object Detection Workflow
+async function startDetecting() { // callback for ml5.objectDetector
+    console.log("Model is ready.");
+    statusText.innerHTML = "Live 🔴";
+    stopBtn.classList.remove("disabled");
     
-//     liveStatus = true;
-//     while(liveStatus) {
-//         await detect();
-//     }
-// }
+    // liveStatus = true;
+    // while(liveStatus) {
+    //     await detect();
+    // }
+}
 
-// async function detect() {
-//     await cocossd.detect(video, (err, results) => {
-//         if (err) {
-//             console.log(err);
-//             return;
-//         }
+async function detect() {
+    await cocossd.detect(video, (err, results) => {
+        if (err) {
+            console.log(err);
+            return;
+        }
 
-//         // update objects (used by draw) to hold results
-//         objects = results;
+        // update objects (used by draw) to hold results
+        objects = results;
 
-//         draw();
+        draw();
 
-//         if (results.length > 0) {
-//             let text = objects[0].label;
-//             for (let i = 0; i < objects.length; i += 1) {
-//                 text += ", a ";
-//                 text += objects[i].label;
-//             }
-//             resultsText.innerHTML = "😀 I see a " + text + "!";
-//         } else {
-//             resultsText.innerHTML = "😐 I don't see nuthing.";
-//         }
-//     });
-// }
+        if (results.length > 0) {
+            let text = objects[0].label;
+            for (let i = 0; i < objects.length; i += 1) {
+                text += ", a ";
+                text += objects[i].label;
+            }
+            resultsText.innerHTML = "😀 I see a " + text + "!";
+        } else {
+            resultsText.innerHTML = "😐 I don't see nuthing.";
+        }
+    });
+}
 
 
-// // Re-draw the Temporary CTX
-// // (Take snippets from real 'video' & add green boxes)
-// async function draw() {
-//     // clear screen
-//     ctx.fillStyle = "black";
-//     ctx.fillRect(0, 0, WIDTH, HEIGHT);
+// Re-draw the Temporary CTX
+// (Take snippets from real 'video' & add green boxes)
+async function draw() {
+    // clear screen
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
     
-//     ctx.drawImage(video, 0, 0);
-//     for (let i = 0; i < objects.length; i += 1) {
+    ctx.drawImage(video, 0, 0);
+    for (let i = 0; i < objects.length; i += 1) {
         
-//         ctx.font = "24px Arial";
-//         ctx.fillStyle = "green";
-//         ctx.fillText(objects[i].label, objects[i].x + 4, objects[i].y - 5);
+        ctx.font = "24px Arial";
+        ctx.fillStyle = "green";
+        ctx.fillText(objects[i].label, objects[i].x + 4, objects[i].y - 5);
         
-//         ctx.beginPath();
-//         ctx.rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
-//         ctx.strokeStyle = "green";
-//         ctx.stroke();
-//         ctx.closePath();
-//     }
-// }
+        ctx.beginPath();
+        ctx.rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
+        ctx.strokeStyle = "green";
+        ctx.stroke();
+        ctx.closePath();
+    }
+}
 
-// // Helper Functions
-// async function createVideoStream() {
-//     // validate video element (access granted by user?)
-//     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-//     video.srcObject = stream;
-//     video.play();
-// }
+// Helper Functions
+async function createVideoStream() {
+    // validate video element (access granted by user?)
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = stream;
+    video.play();
+}
 
-// function setCanvasContext(w, h) {
-//     canvas.width = w;
-//     canvas.height = h;
-// }
+function setCanvasContext(w, h) {
+    canvas.width = w;
+    canvas.height = h;
+}
 
 // function pause() {
 //     return new Promise(resolve => setTimeout(() => resolve(), 20));
 // }
 
-// WORKING 
+/* WORKING 
 
 // initialize video
 // const video = document.querySelector("#video");
@@ -261,3 +261,4 @@ const stopCam = () => {
     stopBtn.classList.add("disabled");
 }
 
+*/
