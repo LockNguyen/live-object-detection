@@ -14,13 +14,13 @@
             <div class="card-body">
                 <h5 id="status" class="card-title">Offline ⚫</h5>
                 <div class="video-card VIDEO-BOX">
-                    <video id="video" ></video>
+                    <video id="video" style="display: none"></video>
                     <canvas id="canvas"></canvas>
                 </div>
                 <button href="#" id="startCam" class="btn btn-success" onClick="startCam()">Start Cam</button>
                 <button href="#" id="stopCam" class="btn btn-danger disabled" onClick="stopCam()">Stop Cam</button>
-                <div class="result-container">
-
+                <div id="results" class="result-container pt-5">
+                    <h1>😴</h1>
                 </div>
             </div>
         </div>
