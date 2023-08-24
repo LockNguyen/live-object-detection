@@ -1,4 +1,16 @@
-.VIDEO-BOX {
-    width: 100%;
-    height: 100%;
+.CONTAINER-BOX {
+    width: 95dvw;
+    height: 95dvh; 
+}
+
+.CARD-BOX {
+    margin: 2.5dvh;
+    width: inherit;
+    height: inherit;
+    box-shadow: black 1px 1px 10px;
+}
+
+.VIDEO-BOX video {
+    position: relative;
+    max-height: 80%;
 }

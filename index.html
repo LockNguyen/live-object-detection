@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="b.css">
 </head>
 <body>
-    <div class="container">
-        <div class="card text-center">
+    <div class="container m-0 CONTAINER-BOX">
+        <div class="card text-center CARD-BOX">
             <div class="card-body">
                 <h5 id="status" class="card-title">Offline ⚫</h5>
                 <div class="video-card VIDEO-BOX">
@@ -19,8 +19,9 @@
                 </div>
                 <button href="#" id="startCam" class="btn btn-success" onClick="startCam()">Start Cam</button>
                 <button href="#" id="stopCam" class="btn btn-danger disabled" onClick="stopCam()">Stop Cam</button>
-                <div id="results" class="result-container pt-5">
-                    <h1>😴</h1>
+                <div class="result-container pt-5">
+                    <h1 id="results">😴</h1>
+                    <h2 id="frameCount">0</h2>
                 </div>
             </div>
         </div>

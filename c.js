@@ -8,38 +8,45 @@ let canvas = document.querySelector("#canvas");
 let ctx;
 let statusText = document.querySelector("#status");
 
-const WIDTH = 480;
-const HEIGHT = 360;
+let WIDTH = 1080;
+let HEIGHT = 720;
 
 const startBtn = document.querySelector("#startCam");
 const stopBtn = document.querySelector("#stopCam");
 const resultsText = document.querySelector("#results");
 
+const frameCount = document.querySelector("#frameCount")
+let count = 0;
+
 // Initialize Camera & Model
 async function make() {
     // turn video into live webcam (hidden)
-    statusText.innerHTML = "Setting up video stream... ⚙️";
-    await createVideoStream();
+    statusText.innerHTML = "Setting up camera... ⚙️";
+    await setupCamera();
+    
+    video.onloadeddata = async function() {
+        // create temporary canvas (CTX) for drawing
+        statusText.innerHTML = "Setting up canvas... ⚙️";
+        setupCanvas(WIDTH, HEIGHT);
+        ctx = canvas.getContext('2d');
+        
+        // create objectDetector
+        cocossd = await ml5.objectDetector('cocossd', startDetecting);
 
-    // create objectDetector
-    statusText.innerHTML = "Setting up ML model... ⚙️";
-    cocossd = await ml5.objectDetector('cocossd', startDetecting);
-
-    // create temporary canvas (CTX) for drawing
-    statusText.innerHTML = "Setting up canvas... ⚙️";
-    setCanvasContext(WIDTH, HEIGHT);
-    ctx = canvas.getContext('2d');
+    };
+    
+    statusText.innerHTML = "Awaiting ML model... ⚙️";
 }
 
 // Start & Stop Cameras
-const startCam = () => {
+function startCam() {
     liveStatus = true;
     statusText.innerHTML = "Starting... ⚙️";
     startBtn.classList.add("disabled");
     make();
 };
 
-const stopCam = () => {
+function stopCam() {
     statusText.innerHTML = "Stopping... ⚙️";
     let stream = video.srcObject;
     let tracks = stream.getTracks();
@@ -51,6 +58,7 @@ const stopCam = () => {
     liveStatus = false;
     statusText.innerHTML = "Offline ⚫";
     resultsText.innerHTML = "😴";
+    
     startBtn.classList.remove("disabled");
     stopBtn.classList.add("disabled");
 }
@@ -60,11 +68,12 @@ async function startDetecting() { // callback for ml5.objectDetector
     console.log("Model is ready.");
     statusText.innerHTML = "Live 🔴";
     stopBtn.classList.remove("disabled");
+    video.setAttribute("style", "display: none;"); 
     
-    // liveStatus = true;
-    // while(liveStatus) {
-    //     await detect();
-    // }
+    liveStatus = true;
+    while(liveStatus) {
+        await detect();
+    }
 }
 
 async function detect() {
@@ -102,7 +111,6 @@ async function draw() {
     
     ctx.drawImage(video, 0, 0);
     for (let i = 0; i < objects.length; i += 1) {
-        
         ctx.font = "24px Arial";
         ctx.fillStyle = "green";
         ctx.fillText(objects[i].label, objects[i].x + 4, objects[i].y - 5);
@@ -116,14 +124,20 @@ async function draw() {
 }
 
 // Helper Functions
-async function createVideoStream() {
+async function setupCamera() {
     // validate video element (access granted by user?)
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    const stream = await navigator.mediaDevices.getUserMedia({ 
+        'video': {
+            facingMode: 'user',
+            height: { ideal: 1920 },
+            width: { ideal: 1920 }
+        }
+    });
     video.srcObject = stream;
     video.play();
 }
 
-function setCanvasContext(w, h) {
+function setupCanvas(w, h) {
     canvas.width = w;
     canvas.height = h;
 }
