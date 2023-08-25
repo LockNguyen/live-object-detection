@@ -90,7 +90,7 @@ async function detect() {
 
         if (results.length > 0) {
             let text = objects[0].label;
-            for (let i = 0; i < objects.length; i += 1) {
+            for (let i = 1; i < objects.length; i += 1) {
                 text += ", a ";
                 text += objects[i].label;
             }
